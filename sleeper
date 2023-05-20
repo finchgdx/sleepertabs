@@ -1,0 +1,48 @@
+from selenium import webdriver
+import time
+
+# Path to the ChromeDriver executable
+chromedriver_path = "C:\Windows\"
+
+# URL of the Chrome browser
+chrome_url = "C:/Program Files/Google/Chrome/Application/chrome.exe"
+
+# URL of the login page
+login_url = "https://sleeper.com/login"
+
+# List of URLs to open in new tabs
+urls = [
+    "https://sleeper.com/leagues/953341618034208768/matchup",
+    "https://sleeper.com/leagues/962777349139812352/matchup",
+    "https://sleeper.com/leagues/959951258268332032/matchup"
+]
+
+# Initialize ChromeDriver
+options = webdriver.ChromeOptions()
+options.binary_location = chrome_url
+driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
+
+# Open Chrome and navigate to the login page
+driver.get(login_url)
+
+# Wait for user to log in
+input("Please enter your credentials and press Enter to continue...")
+
+# Open multiple tabs with specified URLs
+for url in urls:
+    driver.execute_script(f"window.open('{url}', '_blank');")
+
+# Close the first empty tab opened by default
+driver.switch_to.window(driver.window_handles[0])
+driver.close()
+
+# Switch to the remaining tabs
+for handle in driver.window_handles[1:]:
+    driver.switch_to.window(handle)
+    time.sleep(1)  # Optional delay between opening tabs
+
+# Perform further actions on the opened tabs if needed
+# ...
+
+# Close the browser session
+driver.quit()
